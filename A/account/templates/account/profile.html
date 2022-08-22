@@ -3,6 +3,7 @@
 {% block content %}
     <h2 class="text-center">{{ user.username }}</h2>
     <h5 class="text-center"> {{ bio.bio }} ----- age:{{ bio.age }}</h5>
+    <h5 class="text-center"> followers: {{ followers }} ----- following: {{ following }}</h5>
 
     {% if request.user.id == user.id %}
         <div align="center">
