@@ -4,18 +4,36 @@
     <h4>post detail:</h4>
     <p>{{ post.body }}</p>
     <br/><br/>
-    <p><a href="{% url 'account:user_profile' post.user.id %}">{{ post.user.username }}</a> - {{ post.updated|date:'Y-M' }}</p>
+        <p><a href="{% url 'account:user_profile' post.user.id %}">{{ post.user.username }}</a> - {{ post.updated|date:'Y-M' }}</p>
+        <p>Tags:</p>
+            {% with tags=post.tags.all %}
+                {% for tag in tags %}
+                    <p style="display: inline"><a class="btn btn-light" href="{% url 'home:search_tag' tag %}">{{ tag }}</a></p>
+                {% endfor %}
+            {% endwith %}
     {% if request.user.is_authenticated %}
+        <br/><br/>
         <a style="margin-bottom: 5px" href="{% url 'home:post_like' post.id %}" class="{% if can_like %}disabled{% endif %} btn btn-primary col-md-1">Like {{ post.likes_count }}</a>
-        <br/>
+        {% if request.user.id == post.user.id %}
+            <br/>
+            <a href="{% url 'home:post_delete' post.id %}" class="btn btn-danger">Delete</a>
+            <a href="{% url 'home:post_update' post.id %}" class="btn btn-info">Update</a>
+        {% endif %}
     {% endif %}
-    {% if request.user.id == post.user.id %}
-        <a href="{% url 'home:post_delete' post.id %}" class="btn btn-danger">Delete</a>
-        <a href="{% url 'home:post_update' post.id %}" class="btn btn-info">Update</a>
-    {% endif %}
-    <hr/>
 
-    <h3 style="text-align: center">comments:</h3>
+    <hr/>
+    <br/>
+    <div class="card">
+        <h3 style="margin-left: 20px; margin-top: 20px;">similar posts:</h3>
+        {% for simi in similar_posts %}
+            <a href="{{ simi.get_absolute_url }}" class="card-body">{{ simi }}</a>
+        {% empty %}
+            <h5 style="margin-left: 50px; margin-bottom: 20px; margin-top: 10px">sorry no similar post ):</h5>
+        {% endfor %}
+    </div>
+    <br/><br/>
+
+    <h3>comments:</h3>
     {% if request.user.is_authenticated %}
         <form action="" method="post">
             {% csrf_token %}
@@ -44,6 +62,7 @@
                     <p class="bg-primary p-3 m-2">{{ reply.user }} - {{ reply.body }}<br/></p>
                 {% endfor %}
             {% endwith %}
+            <br/>
         </div>
         <br/>
     {% empty %}

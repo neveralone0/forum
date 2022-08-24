@@ -5,7 +5,8 @@ from .models import Post, Comment
 class PostCreateUpdateForm(forms.ModelForm):
     class Meta:
         model = Post
-        fields = ('body',)
+        fields = ('body', 'tags')
+
 
 
 class CommentCreateForm(forms.ModelForm):
@@ -28,4 +29,5 @@ class CommentReplyForm(forms.ModelForm):
 
 class PostSearchForm(forms.Form):
     search = forms.CharField()
+    search_tags = forms.BooleanField(required=False)
 
