@@ -67,6 +67,7 @@ class UserloginView(View):
                 messages.error(request, 'username or password is wrong', 'warning')
         return render(request, self.template_name, {'form': form})
 
+
 class UserLogoutView(LoginRequiredMixin, View):
     def get(self, request):
         logout(request)
@@ -159,7 +160,6 @@ class UserUnfollowView(LoginRequiredMixin, View):
             relation.delete()
             messages.success(request, 'user unfollowed', 'success')
         return redirect('account:user_profile', user.id)
-
 
 
 class EditUserView(LoginRequiredMixin, View):

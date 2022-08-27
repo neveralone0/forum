@@ -9,7 +9,7 @@ from .models import Post, Comment, Vote
 from .forms import PostCreateUpdateForm, CommentCreateForm, CommentReplyForm, PostSearchForm
 from taggit.models import Tag
 import random
-
+from better_profanity import profanity
 
 
 class HomeView(View):
@@ -104,6 +104,11 @@ class PostUpdateView(LoginRequiredMixin, View):
         post = self.post_instcance
         form = self.form_class(request.POST, instance=post)
         if form.is_valid():
+            # check for badwords
+            check = profanity.censor(form.cleaned_data['body'])
+            if check != form.cleaned_data['body']:
+                messages.error(request, 'shame on you!', 'danger')
+                return redirect('home:home')
             new_post = form.save(commit=False)
             new_post.slug = slugify(form.cleaned_data['body'][:30])
             new_post.save()
@@ -124,9 +129,18 @@ class PostCreateView(LoginRequiredMixin, View):
             new_post = form.save(commit=False)
             new_post.slug = slugify(form.cleaned_data['body'][:30])
             new_post.user = request.user
+            # check for badwords
+            print('what hell')
+            check = profanity.censor(form.cleaned_data['body'])
+            if check != form.cleaned_data['body']:
+                print('============')
+                print(check)
+                print(form.cleaned_data['body'])
+                messages.error(request, 'shame on you!', 'danger')
+                return redirect('home:home')
             new_post.save()
             form.save_m2m()
-            messages.success(request, 'you create new post', 'success')
+
             return redirect('home:post_detail', new_post.id, new_post.slug)
 
 
@@ -138,6 +152,11 @@ class PostAddCommentView(LoginRequiredMixin, View):
         comment = get_object_or_404(Comment, id=comment_id)
         form = self.form_class(request.POST)
         if form.is_valid():
+            # check for badwords
+            check = profanity.censor(form.cleaned_data['body'])
+            if check != form.cleaned_data['body']:
+                messages.error(request, 'shame on you!', 'danger')
+                return redirect('home:home')
             reply = form.save(commit=False)
             reply.user = request.user
             reply.post = post

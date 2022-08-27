@@ -11,9 +11,9 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
 from pathlib import Path
+import joblib
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-import account.apps
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'home.apps.HomeConfig',
     'account.apps.AccountConfig',
+    'taggit',
 ]
 
 MIDDLEWARE = [
