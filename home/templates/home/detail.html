@@ -13,7 +13,12 @@
             {% endwith %}
     {% if request.user.is_authenticated %}
         <br/><br/>
-        <a style="margin-bottom: 5px" href="{% url 'home:post_like' post.id %}" class="{% if can_like %}disabled{% endif %} btn btn-primary col-md-1">Like {{ post.likes_count }}</a>
+
+        <a style="margin-bottom: 5px" href="{% url 'home:post_like' post.id %}"
+         class="{% if can_like %}btn btn-warning{% else %}btn btn-primary{% endif %} col-md-1">
+            {% if can_like %}Dislike{% else %}Like{% endif %}{{ post.likes_count }}
+        </a>
+
         {% if request.user.id == post.user.id %}
             <br/>
             <a href="{% url 'home:post_delete' post.id %}" class="btn btn-danger">Delete</a>
